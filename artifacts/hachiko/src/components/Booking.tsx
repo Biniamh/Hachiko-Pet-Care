@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useCreateBooking } from "@workspace/api-client-react";
+import type { Booking as BookingType } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import {
   Scissors, Home, Footprints, Stethoscope,
   CheckCircle2, Calendar, Clock, ChevronLeft, ChevronRight,
-  User, Mail, Phone, PawPrint, RefreshCw
+  User, Mail, Phone, PawPrint, RefreshCw, Loader2,
 } from "lucide-react";
 
 const SERVICES = [
@@ -67,8 +69,7 @@ const detailsSchema = z.object({
 type DetailsFormValues = z.infer<typeof detailsSchema>;
 
 function getTodayStr() {
-  const d = new Date();
-  return d.toISOString().split("T")[0];
+  return new Date().toISOString().split("T")[0];
 }
 
 function formatDate(dateStr: string) {
@@ -77,18 +78,15 @@ function formatDate(dateStr: string) {
   return d.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
 }
 
-function generateConfirmationId() {
-  return "HVC-" + Math.random().toString(36).substring(2, 8).toUpperCase();
-}
-
 export function Booking() {
   const [step, setStep] = useState<1 | 2 | 3 | "confirmed">(1);
   const [selectedService, setSelectedService] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [step1Error, setStep1Error] = useState<string>("");
-  const [confirmationId] = useState(generateConfirmationId);
-  const [submittedData, setSubmittedData] = useState<DetailsFormValues | null>(null);
+  const [confirmedBooking, setConfirmedBooking] = useState<BookingType | null>(null);
+
+  const createBooking = useCreateBooking();
 
   const form = useForm<DetailsFormValues>({
     resolver: zodResolver(detailsSchema),
@@ -103,18 +101,9 @@ export function Booking() {
   });
 
   const validateStep1 = () => {
-    if (!selectedService) {
-      setStep1Error("Please select a service.");
-      return false;
-    }
-    if (!selectedDate) {
-      setStep1Error("Please choose a date.");
-      return false;
-    }
-    if (!selectedTime) {
-      setStep1Error("Please select a time slot.");
-      return false;
-    }
+    if (!selectedService) { setStep1Error("Please select a service."); return false; }
+    if (!selectedDate) { setStep1Error("Please choose a date."); return false; }
+    if (!selectedTime) { setStep1Error("Please select a time slot."); return false; }
     setStep1Error("");
     return true;
   };
@@ -123,9 +112,29 @@ export function Booking() {
     if (validateStep1()) setStep(2);
   };
 
-  const onSubmit = (data: DetailsFormValues) => {
-    setSubmittedData(data);
-    setStep("confirmed");
+  const handleConfirm = () => {
+    const values = form.getValues();
+    createBooking.mutate(
+      {
+        data: {
+          service: selectedService,
+          date: selectedDate,
+          time: selectedTime,
+          ownerName: values.ownerName,
+          email: values.email,
+          phone: values.phone,
+          petName: values.petName,
+          petBreed: values.petBreed,
+          notes: values.notes || null,
+        },
+      },
+      {
+        onSuccess: (booking) => {
+          setConfirmedBooking(booking);
+          setStep("confirmed");
+        },
+      },
+    );
   };
 
   const resetBooking = () => {
@@ -133,7 +142,8 @@ export function Booking() {
     setSelectedDate("");
     setSelectedTime("");
     setStep1Error("");
-    setSubmittedData(null);
+    setConfirmedBooking(null);
+    createBooking.reset();
     form.reset();
     setStep(1);
   };
@@ -142,12 +152,10 @@ export function Booking() {
 
   return (
     <section id="booking" className="py-24 bg-muted/40 relative overflow-hidden">
-      {/* Decorative blobs */}
       <div className="absolute top-0 right-0 -mr-40 -mt-40 w-96 h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 -ml-40 -mb-40 w-96 h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">
-        {/* Section header */}
         <div className="text-center max-w-2xl mx-auto mb-14">
           <motion.span
             initial={{ opacity: 0 }}
@@ -184,7 +192,7 @@ export function Booking() {
           transition={{ duration: 0.6, delay: 0.15 }}
           className="max-w-3xl mx-auto"
         >
-          {/* Progress Steps (only show for steps 1 and 2) */}
+          {/* Progress indicator */}
           {step !== "confirmed" && (
             <div className="flex items-center justify-center gap-3 mb-10">
               {[
@@ -199,11 +207,7 @@ export function Booking() {
                     <div className="flex items-center gap-2">
                       <div
                         className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
-                          isDone
-                            ? "bg-primary text-white"
-                            : isActive
-                            ? "bg-primary text-white"
-                            : "bg-border text-muted-foreground"
+                          isDone || isActive ? "bg-primary text-white" : "bg-border text-muted-foreground"
                         }`}
                       >
                         {isDone ? <CheckCircle2 size={16} /> : n}
@@ -262,15 +266,12 @@ export function Booking() {
                               <span className="text-xs font-medium text-primary">{service.price}</span>
                             </div>
                           </div>
-                          {isSelected && (
-                            <CheckCircle2 size={18} className="text-primary shrink-0 ml-auto mt-0.5" />
-                          )}
+                          {isSelected && <CheckCircle2 size={18} className="text-primary shrink-0 ml-auto mt-0.5" />}
                         </button>
                       );
                     })}
                   </div>
 
-                  {/* Date */}
                   <div className="mb-6">
                     <label className="block text-sm font-semibold text-foreground mb-2">
                       <span className="flex items-center gap-2"><Calendar size={15} /> Select a Date</span>
@@ -285,7 +286,6 @@ export function Booking() {
                     />
                   </div>
 
-                  {/* Time Slots */}
                   <div className="mb-8">
                     <label className="block text-sm font-semibold text-foreground mb-3">
                       <span className="flex items-center gap-2"><Clock size={15} /> Available Time Slots</span>
@@ -308,17 +308,14 @@ export function Booking() {
                     </div>
                   </div>
 
-                  {step1Error && (
-                    <p className="text-destructive text-sm mb-4">{step1Error}</p>
-                  )}
+                  {step1Error && <p className="text-destructive text-sm mb-4">{step1Error}</p>}
 
                   <Button
                     onClick={handleStep1Next}
                     className="w-full h-12 text-base font-semibold rounded-full bg-primary hover:bg-primary/90 gap-2"
                     data-testid="button-step1-next"
                   >
-                    Continue
-                    <ChevronRight size={18} />
+                    Continue <ChevronRight size={18} />
                   </Button>
                 </motion.div>
               )}
@@ -333,19 +330,16 @@ export function Booking() {
                   transition={{ duration: 0.3 }}
                   className="p-8 md:p-10"
                 >
-                  {/* Selection summary */}
                   <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 mb-8 flex flex-wrap gap-4 text-sm">
                     <div className="flex items-center gap-2 text-primary font-medium">
                       {selectedServiceObj && <selectedServiceObj.icon size={16} />}
                       {selectedServiceObj?.label}
                     </div>
                     <div className="flex items-center gap-1.5 text-muted-foreground">
-                      <Calendar size={14} />
-                      {formatDate(selectedDate)}
+                      <Calendar size={14} /> {formatDate(selectedDate)}
                     </div>
                     <div className="flex items-center gap-1.5 text-muted-foreground">
-                      <Clock size={14} />
-                      {selectedTime}
+                      <Clock size={14} /> {selectedTime}
                     </div>
                   </div>
 
@@ -449,7 +443,7 @@ export function Booking() {
                           type="button"
                           variant="outline"
                           onClick={() => setStep(1)}
-                          className="rounded-full gap-1.5 border-border"
+                          className="rounded-full gap-1.5"
                           data-testid="button-step2-back"
                         >
                           <ChevronLeft size={16} /> Back
@@ -459,8 +453,7 @@ export function Booking() {
                           className="flex-1 h-12 text-base font-semibold rounded-full bg-primary hover:bg-primary/90 gap-2"
                           data-testid="button-step2-review"
                         >
-                          Review Booking
-                          <ChevronRight size={18} />
+                          Review Booking <ChevronRight size={18} />
                         </Button>
                       </div>
                     </form>
@@ -481,49 +474,35 @@ export function Booking() {
                   <h3 className="text-2xl font-serif font-bold text-foreground mb-2">Review Your Booking</h3>
                   <p className="text-muted-foreground mb-8">Please confirm the details below before submitting.</p>
 
-                  <div className="space-y-6">
-                    {/* Service block */}
+                  <div className="space-y-5">
                     <div className="bg-muted/60 rounded-xl p-5 space-y-3">
                       <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4">Service Details</p>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Service</span>
-                        <span className="text-sm font-semibold text-foreground">{selectedServiceObj?.label}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Date</span>
-                        <span className="text-sm font-semibold text-foreground">{formatDate(selectedDate)}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Time</span>
-                        <span className="text-sm font-semibold text-foreground">{selectedTime}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Starting Price</span>
-                        <span className="text-sm font-bold text-primary">{selectedServiceObj?.price}</span>
-                      </div>
+                      {[
+                        { label: "Service", value: selectedServiceObj?.label },
+                        { label: "Date", value: formatDate(selectedDate) },
+                        { label: "Time", value: selectedTime },
+                        { label: "Starting Price", value: selectedServiceObj?.price, highlight: true },
+                      ].map(({ label, value, highlight }) => (
+                        <div key={label} className="flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">{label}</span>
+                          <span className={`text-sm font-semibold ${highlight ? "text-primary" : "text-foreground"}`}>{value}</span>
+                        </div>
+                      ))}
                     </div>
 
-                    {/* Owner block */}
                     <div className="bg-muted/60 rounded-xl p-5 space-y-3">
                       <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4">Owner & Pet</p>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Name</span>
-                        <span className="text-sm font-semibold text-foreground">{form.getValues("ownerName")}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Email</span>
-                        <span className="text-sm font-semibold text-foreground">{form.getValues("email")}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Phone</span>
-                        <span className="text-sm font-semibold text-foreground">{form.getValues("phone")}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Pet</span>
-                        <span className="text-sm font-semibold text-foreground">
-                          {form.getValues("petName")} ({form.getValues("petBreed")})
-                        </span>
-                      </div>
+                      {[
+                        { label: "Name", value: form.getValues("ownerName") },
+                        { label: "Email", value: form.getValues("email") },
+                        { label: "Phone", value: form.getValues("phone") },
+                        { label: "Pet", value: `${form.getValues("petName")} (${form.getValues("petBreed")})` },
+                      ].map(({ label, value }) => (
+                        <div key={label} className="flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">{label}</span>
+                          <span className="text-sm font-semibold text-foreground">{value}</span>
+                        </div>
+                      ))}
                       {form.getValues("notes") && (
                         <div className="flex justify-between items-start gap-4">
                           <span className="text-sm text-muted-foreground shrink-0">Notes</span>
@@ -533,32 +512,44 @@ export function Booking() {
                     </div>
                   </div>
 
+                  {createBooking.isError && (
+                    <p className="text-destructive text-sm mt-4">
+                      Something went wrong. Please try again.
+                    </p>
+                  )}
+
                   <div className="flex gap-3 mt-8">
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => setStep(2)}
-                      className="rounded-full gap-1.5 border-border"
+                      className="rounded-full gap-1.5"
+                      disabled={createBooking.isPending}
                       data-testid="button-step3-back"
                     >
                       <ChevronLeft size={16} /> Edit
                     </Button>
                     <Button
-                      onClick={form.handleSubmit(onSubmit)}
-                      className="flex-1 h-12 text-base font-semibold rounded-full bg-primary hover:bg-primary/90"
+                      onClick={handleConfirm}
+                      disabled={createBooking.isPending}
+                      className="flex-1 h-12 text-base font-semibold rounded-full bg-primary hover:bg-primary/90 gap-2"
                       data-testid="button-confirm-booking"
                     >
-                      Confirm Booking
+                      {createBooking.isPending ? (
+                        <><Loader2 size={18} className="animate-spin" /> Confirming...</>
+                      ) : (
+                        "Confirm Booking"
+                      )}
                     </Button>
                   </div>
                 </motion.div>
               )}
 
               {/* ─── CONFIRMATION ─── */}
-              {step === "confirmed" && (
+              {step === "confirmed" && confirmedBooking && (
                 <motion.div
                   key="confirmed"
-                  initial={{ opacity: 0, scale: 0.95 }}
+                  initial={{ opacity: 0, scale: 0.96 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.4, ease: "easeOut" }}
                   className="p-8 md:p-12 text-center"
@@ -574,39 +565,44 @@ export function Booking() {
 
                   <h3 className="text-3xl font-serif font-bold text-foreground mb-2">Booking Confirmed!</h3>
                   <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-                    Thank you, {submittedData?.ownerName}! We've received your booking and will send a confirmation to{" "}
-                    <span className="font-medium text-foreground">{submittedData?.email}</span>.
+                    Thank you, <span className="font-medium text-foreground">{confirmedBooking.ownerName}</span>! A confirmation has been noted for{" "}
+                    <span className="font-medium text-foreground">{confirmedBooking.email}</span>.
                   </p>
 
-                  {/* Confirmation card */}
                   <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 text-left max-w-md mx-auto mb-8">
                     <div className="flex items-center justify-between mb-5">
                       <p className="text-xs font-bold uppercase tracking-widest text-primary">Booking Reference</p>
-                      <span className="font-mono font-bold text-lg text-foreground">{confirmationId}</span>
+                      <span className="font-mono font-bold text-lg text-foreground">{confirmedBooking.confirmationId}</span>
                     </div>
 
                     <div className="space-y-3 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Service</span>
-                        <span className="font-semibold">{selectedServiceObj?.label}</span>
+                        <span className="font-semibold capitalize">{confirmedBooking.service.replace("-", " ")}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Date</span>
-                        <span className="font-semibold">{formatDate(selectedDate)}</span>
+                        <span className="font-semibold">{formatDate(confirmedBooking.date)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Time</span>
-                        <span className="font-semibold">{selectedTime}</span>
+                        <span className="font-semibold">{confirmedBooking.time}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Status</span>
+                        <span className="font-semibold text-primary capitalize">{confirmedBooking.status}</span>
                       </div>
                       <div className="border-t border-primary/20 pt-3 flex justify-between">
                         <span className="text-muted-foreground">Pet</span>
-                        <span className="font-semibold">{submittedData?.petName} ({submittedData?.petBreed})</span>
+                        <span className="font-semibold">{confirmedBooking.petName} ({confirmedBooking.petBreed})</span>
                       </div>
                     </div>
                   </div>
 
                   <p className="text-sm text-muted-foreground mb-6">
-                    Questions? Call us at <a href="tel:5035550199" className="text-primary font-medium hover:underline">(503) 555-0199</a> or email{" "}
+                    Questions? Call{" "}
+                    <a href="tel:5035550199" className="text-primary font-medium hover:underline">(503) 555-0199</a>{" "}
+                    or email{" "}
                     <a href="mailto:hello@hachikovet.com" className="text-primary font-medium hover:underline">hello@hachikovet.com</a>
                   </p>
 
@@ -616,8 +612,7 @@ export function Booking() {
                     className="rounded-full gap-2 border-primary text-primary hover:bg-primary hover:text-white"
                     data-testid="button-book-another"
                   >
-                    <RefreshCw size={15} />
-                    Book Another Appointment
+                    <RefreshCw size={15} /> Book Another Appointment
                   </Button>
                 </motion.div>
               )}

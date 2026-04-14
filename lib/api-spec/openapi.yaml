@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: bookings
+    description: Booking operations
 paths:
   /healthz:
     get:
@@ -24,6 +26,70 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /bookings:
+    get:
+      operationId: listBookings
+      tags: [bookings]
+      summary: List all bookings
+      responses:
+        "200":
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Booking"
+    post:
+      operationId: createBooking
+      tags: [bookings]
+      summary: Create a new booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBookingBody"
+      responses:
+        "201":
+          description: Booking created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /bookings/{id}:
+    get:
+      operationId: getBooking
+      tags: [bookings]
+      summary: Get a booking by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Booking found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +100,85 @@ components:
       required:
         - status
 
+    Booking:
+      type: object
+      properties:
+        id:
+          type: integer
+        confirmationId:
+          type: string
+        service:
+          type: string
+        date:
+          type: string
+        time:
+          type: string
+        ownerName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        petName:
+          type: string
+        petBreed:
+          type: string
+        notes:
+          type: ["string", "null"]
+        status:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - confirmationId
+        - service
+        - date
+        - time
+        - ownerName
+        - email
+        - phone
+        - petName
+        - petBreed
+        - notes
+        - status
+        - createdAt
+
+    CreateBookingBody:
+      type: object
+      properties:
+        service:
+          type: string
+        date:
+          type: string
+        time:
+          type: string
+        ownerName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        petName:
+          type: string
+        petBreed:
+          type: string
+        notes:
+          type: ["string", "null"]
+      required:
+        - service
+        - date
+        - time
+        - ownerName
+        - email
+        - phone
+        - petName
+        - petBreed
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error

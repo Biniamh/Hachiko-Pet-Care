@@ -14,3 +14,61 @@ import * as zod from "zod";
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * @summary List all bookings
+ */
+export const ListBookingsResponseItem = zod.object({
+  id: zod.number(),
+  confirmationId: zod.string(),
+  service: zod.string(),
+  date: zod.string(),
+  time: zod.string(),
+  ownerName: zod.string(),
+  email: zod.string(),
+  phone: zod.string(),
+  petName: zod.string(),
+  petBreed: zod.string(),
+  notes: zod.string().nullable(),
+  status: zod.string(),
+  createdAt: zod.string(),
+});
+export const ListBookingsResponse = zod.array(ListBookingsResponseItem);
+
+/**
+ * @summary Create a new booking
+ */
+export const CreateBookingBody = zod.object({
+  service: zod.string(),
+  date: zod.string(),
+  time: zod.string(),
+  ownerName: zod.string(),
+  email: zod.string(),
+  phone: zod.string(),
+  petName: zod.string(),
+  petBreed: zod.string(),
+  notes: zod.string().nullish(),
+});
+
+/**
+ * @summary Get a booking by ID
+ */
+export const GetBookingParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GetBookingResponse = zod.object({
+  id: zod.number(),
+  confirmationId: zod.string(),
+  service: zod.string(),
+  date: zod.string(),
+  time: zod.string(),
+  ownerName: zod.string(),
+  email: zod.string(),
+  phone: zod.string(),
+  petName: zod.string(),
+  petBreed: zod.string(),
+  notes: zod.string().nullable(),
+  status: zod.string(),
+  createdAt: zod.string(),
+});

@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { db } from "@workspace/db";
-import { bookings } from "@workspace/db/schema";
+import { db, bookingsTable } from "@workspace/db";
 import { desc } from "drizzle-orm";
 import { Resend } from "resend";
 
@@ -61,7 +60,7 @@ router.post("/admin/logout", (req, res) => {
 });
 
 router.get("/admin/bookings", requireAdmin, async (_req, res) => {
-  const rows = await db.select().from(bookings).orderBy(desc(bookings.createdAt));
+  const rows = await db.select().from(bookingsTable).orderBy(desc(bookingsTable.createdAt));
   res.json(rows);
 });
 
@@ -72,9 +71,8 @@ router.post("/admin/bookings/:id/send-email", requireAdmin, async (req, res) => 
     return;
   }
 
-  const [booking] = await db.select().from(bookings).where(
-    (await import("drizzle-orm")).eq(bookings.id, id),
-  );
+  const { eq } = await import("drizzle-orm");
+  const [booking] = await db.select().from(bookingsTable).where(eq(bookingsTable.id, id));
 
   if (!booking) {
     res.status(404).json({ error: "Booking not found" });

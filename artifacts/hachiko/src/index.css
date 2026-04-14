@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&family=Outfit:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
@@ -56,56 +57,54 @@
 }
 
 :root {
-  /* Hachiko Warm Palette */
-  /* Background: Soft Cream */
-  --background: 40 33% 98%;
-  /* Foreground: Deep Earthy Brown */
-  --foreground: 24 20% 20%;
-  
-  --border: 30 20% 90%;
-  --input: 30 20% 90%;
-  --ring: 24 90% 55%;
+  /* Hachiko Vet — Green & Black Palette */
+  --background: 0 0% 99%;
+  --foreground: 145 30% 8%;
 
-  /* Card: Pure White/Cream */
+  --border: 145 12% 88%;
+  --input: 145 12% 88%;
+  --ring: 145 65% 28%;
+
+  /* Card: Clean White */
   --card: 0 0% 100%;
-  --card-foreground: 24 20% 20%;
-  --card-border: 30 20% 92%;
+  --card-foreground: 145 30% 8%;
+  --card-border: 145 10% 90%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 24 20% 20%;
-  --popover-border: 30 20% 92%;
+  --popover-foreground: 145 30% 8%;
+  --popover-border: 145 10% 90%;
 
-  /* Primary: Sunset Amber */
-  --primary: 24 90% 55%;
+  /* Primary: Deep Forest Green */
+  --primary: 145 65% 28%;
   --primary-foreground: 0 0% 100%;
 
-  /* Secondary: Sage Green */
-  --secondary: 110 20% 50%;
-  --secondary-foreground: 0 0% 100%;
+  /* Secondary: Lighter sage green */
+  --secondary: 145 30% 88%;
+  --secondary-foreground: 145 65% 18%;
 
-  /* Muted: Warm Gray */
-  --muted: 35 25% 94%;
-  --muted-foreground: 24 15% 45%;
+  /* Muted: Very light green-tinted gray */
+  --muted: 145 10% 95%;
+  --muted-foreground: 145 15% 40%;
 
-  /* Accent: Soft Peach/Orange */
-  --accent: 30 80% 94%;
-  --accent-foreground: 24 90% 40%;
+  /* Accent: Soft mint */
+  --accent: 145 45% 90%;
+  --accent-foreground: 145 65% 22%;
 
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
 
-  --chart-1: 24 90% 55%;
-  --chart-2: 110 20% 50%;
-  --chart-3: 30 80% 60%;
-  --chart-4: 40 40% 70%;
-  --chart-5: 20 50% 40%;
+  --chart-1: 145 65% 28%;
+  --chart-2: 145 40% 50%;
+  --chart-3: 145 25% 65%;
+  --chart-4: 160 50% 40%;
+  --chart-5: 130 55% 35%;
 
   --app-font-sans: "Outfit", system-ui, sans-serif;
   --app-font-serif: "Fraunces", Georgia, serif;
   --app-font-mono: "Space Mono", monospace;
-  
+
   --radius: 1rem;
-  
+
   --button-outline: rgba(0,0,0, .10);
   --badge-outline: rgba(0,0,0, .05);
   --opaque-button-border-intensity: -8;
@@ -128,44 +127,6 @@
   --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 }
 
-.dark {
-  --background: 24 20% 12%;
-  --foreground: 40 33% 96%;
-  
-  --border: 24 15% 25%;
-  --input: 24 15% 25%;
-  --ring: 24 90% 55%;
-
-  --card: 24 20% 15%;
-  --card-foreground: 40 33% 96%;
-  --card-border: 24 15% 22%;
-
-  --popover: 24 20% 15%;
-  --popover-foreground: 40 33% 96%;
-  --popover-border: 24 15% 22%;
-
-  --primary: 24 90% 55%;
-  --primary-foreground: 0 0% 100%;
-
-  --secondary: 110 20% 45%;
-  --secondary-foreground: 0 0% 100%;
-
-  --muted: 24 20% 20%;
-  --muted-foreground: 40 20% 70%;
-
-  --accent: 24 30% 25%;
-  --accent-foreground: 30 80% 90%;
-
-  --destructive: 0 62% 30%;
-  --destructive-foreground: 0 0% 100%;
-
-  --chart-1: 24 90% 55%;
-  --chart-2: 110 20% 50%;
-  --chart-3: 30 80% 60%;
-  --chart-4: 40 40% 70%;
-  --chart-5: 20 50% 40%;
-}
-
 @layer base {
   * {
     @apply border-border;
@@ -178,5 +139,65 @@
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif tracking-tight;
+  }
+}
+
+@layer utilities {
+  .no-default-hover-elevate {}
+  .no-default-active-elevate {}
+
+  .toggle-elevate::before,
+  .toggle-elevate-2::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0px;
+    border-radius: inherit;
+    z-index: -1;
+  }
+
+  .toggle-elevate.toggle-elevated::before {
+    background-color: var(--elevate-2);
+  }
+
+  .border.toggle-elevate::before {
+    inset: -1px;
+  }
+
+  .hover-elevate:not(.no-default-hover-elevate),
+  .active-elevate:not(.no-default-active-elevate),
+  .hover-elevate-2:not(.no-default-hover-elevate),
+  .active-elevate-2:not(.no-default-active-elevate) {
+    position: relative;
+    z-index: 0;
+  }
+
+  .hover-elevate:not(.no-default-hover-elevate)::after,
+  .active-elevate:not(.no-default-active-elevate)::after,
+  .hover-elevate-2:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:not(.no-default-active-elevate)::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0px;
+    border-radius: inherit;
+    z-index: 999;
+  }
+
+  .hover-elevate:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-1);
+  }
+
+  .hover-elevate-2:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-2);
+  }
+
+  .border.hover-elevate:not(.no-hover-interaction-elevate)::after,
+  .border.active-elevate:not(.no-active-interaction-elevate)::after,
+  .border.hover-elevate-2:not(.no-hover-interaction-elevate)::after,
+  .border.active-elevate-2:not(.no-active-interaction-elevate)::after {
+    inset: -1px;
   }
 }

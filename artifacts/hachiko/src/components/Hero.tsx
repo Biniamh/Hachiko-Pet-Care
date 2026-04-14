@@ -1,9 +1,11 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { HachikoLogo } from "@/components/Logo";
+import { ArrowRight, Shield, Heart, Clock } from "lucide-react";
 
 export function Hero() {
-  const scrollToContact = () => {
-    document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" });
+  const scrollToBooking = () => {
+    document.querySelector("#booking")?.scrollIntoView({ behavior: "smooth" });
   };
 
   const scrollToServices = () => {
@@ -12,15 +14,15 @@ export function Hero() {
 
   return (
     <section className="relative min-h-[100dvh] flex items-center pt-20 overflow-hidden">
-      {/* Background Image with Parallax effect */}
+      {/* Background Image */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-transparent z-10" />
-        <motion.img 
-          initial={{ scale: 1.1 }}
+        <div className="absolute inset-0 bg-gradient-to-r from-foreground/90 via-foreground/60 to-foreground/20 z-10" />
+        <motion.img
+          initial={{ scale: 1.08 }}
           animate={{ scale: 1 }}
-          transition={{ duration: 1.5, ease: "easeOut" }}
+          transition={{ duration: 1.8, ease: "easeOut" }}
           src="/images/hero.png"
-          alt="Happy dogs running" 
+          alt="Veterinary care at Hachiko"
           className="w-full h-full object-cover object-center"
         />
       </div>
@@ -32,34 +34,57 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <span className="inline-block py-1 px-3 rounded-full bg-accent text-accent-foreground text-sm font-semibold mb-6 shadow-sm">
-              Premium Pet Care
-            </span>
-            <h1 className="text-5xl md:text-7xl font-serif font-bold leading-[1.1] mb-6 text-foreground">
-              Because they're not just pets.<br />
-              <span className="text-primary italic">They're family.</span>
+            {/* Logo in hero */}
+            <div className="mb-8">
+              <HachikoLogo variant="light" size="lg" />
+            </div>
+
+            <h1 className="text-5xl md:text-7xl font-serif font-bold leading-[1.08] mb-6 text-white">
+              Professional care<br />
+              <span className="text-primary italic">they deserve.</span>
             </h1>
-            <p className="text-lg md:text-xl text-foreground/80 mb-8 max-w-xl leading-relaxed">
-              Named after the legendary loyal dog, Hachiko provides devotion, warmth, and unparalleled care for your beloved companion.
+            <p className="text-lg md:text-xl text-white/80 mb-10 max-w-xl leading-relaxed">
+              Named after the legendary loyal dog, Hachiko provides compassionate, expert veterinary and pet care services — because your companion deserves the best.
             </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button 
-                onClick={scrollToContact} 
-                size="lg" 
-                className="rounded-full text-base px-8 h-14 shadow-lg hover:shadow-xl transition-all"
+
+            <div className="flex flex-col sm:flex-row gap-4 mb-12">
+              <Button
+                onClick={scrollToBooking}
+                size="lg"
+                className="rounded-full text-base px-8 h-14 shadow-lg hover:shadow-xl transition-all bg-primary hover:bg-primary/90 gap-2"
+                data-testid="button-hero-book"
               >
-                Schedule a Meet & Greet
+                Book an Appointment
+                <ArrowRight size={18} />
               </Button>
-              <Button 
-                onClick={scrollToServices} 
-                variant="outline" 
-                size="lg" 
-                className="rounded-full text-base px-8 h-14 bg-background/50 backdrop-blur-sm border-border hover:bg-background"
+              <Button
+                onClick={scrollToServices}
+                variant="outline"
+                size="lg"
+                className="rounded-full text-base px-8 h-14 bg-white/10 backdrop-blur-sm border-white/40 text-white hover:bg-white/20 hover:border-white/60"
               >
-                Explore Services
+                Our Services
               </Button>
             </div>
+
+            {/* Trust signals */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.7 }}
+              className="flex flex-wrap gap-6"
+            >
+              {[
+                { icon: Shield, text: "Licensed Veterinarians" },
+                { icon: Heart, text: "500+ Happy Pets" },
+                { icon: Clock, text: "10+ Years Experience" },
+              ].map(({ icon: Icon, text }) => (
+                <div key={text} className="flex items-center gap-2 text-white/90">
+                  <Icon size={16} className="text-primary" />
+                  <span className="text-sm font-medium">{text}</span>
+                </div>
+              ))}
+            </motion.div>
           </motion.div>
         </div>
       </div>

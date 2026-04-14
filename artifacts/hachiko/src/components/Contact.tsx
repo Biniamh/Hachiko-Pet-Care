@@ -34,10 +34,9 @@ export function Contact() {
   });
 
   const onSubmit = (data: FormValues) => {
-    console.log("Form data:", data);
     toast({
-      title: "Request Sent Successfully",
-      description: `Thank you, ${data.name}. We'll contact you about ${data.petName} soon!`,
+      title: "Message Sent",
+      description: `Thank you, ${data.name}. We'll be in touch about ${data.petName} shortly!`,
     });
     form.reset();
   };

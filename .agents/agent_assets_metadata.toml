@@ -1,0 +1,38 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "jvXY5nPVJGBwjmELZcPLI"
+uri = "file://artifacts/hachiko/public/images/hero.png"
+type = "image"
+title = "dogs running golden hour"
+
+[[generated]]
+id = "trm5nkPUYANDUfDbev9Nm"
+uri = "file://artifacts/hachiko/public/images/grooming.png"
+type = "image"
+title = "cat being groomed"
+
+[[generated]]
+id = "EHnzO6HCj-cDMZsPo2Zgw"
+uri = "file://artifacts/hachiko/public/images/boarding.png"
+type = "image"
+title = "dog relaxing in cozy room"
+
+[[generated]]
+id = "kbNoYNpIwLs4pJJS1SOlF"
+uri = "file://artifacts/hachiko/public/images/walking.png"
+type = "image"
+title = "dog walker in park"
+
+[[generated]]
+id = "RdwNeWp6GJuD31BysvlhN"
+uri = "file://artifacts/hachiko/public/images/vet.png"
+type = "image"
+title = "vet examining puppy"
+
+[[generated]]
+id = "0XsJPnBDG1_5AN10BFLAN"
+uri = "file://artifacts/hachiko/public/images/about.png"
+type = "image"
+title = "happy owner and dog"

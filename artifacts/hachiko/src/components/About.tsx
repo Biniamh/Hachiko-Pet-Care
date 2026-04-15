@@ -13,10 +13,12 @@ const highlights = [
 
 export function About() {
   return (
-    <section id="about" className="py-24 bg-background overflow-hidden relative">
+    <section
+      id="about"
+      className="py-24 bg-background overflow-hidden relative"
+    >
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-
           {/* Image Side */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
@@ -61,8 +63,12 @@ export function About() {
               transition={{ delay: 0.4, duration: 0.6 }}
               className="absolute top-6 -right-4 md:-right-8 bg-primary p-5 rounded-2xl shadow-xl z-20 text-white max-w-[150px]"
             >
-              <p className="text-4xl font-serif font-bold leading-none mb-1">3+</p>
-              <p className="text-xs font-medium leading-tight opacity-90">Years of dedicated pet care</p>
+              <p className="text-4xl font-serif font-bold leading-none mb-1">
+                3+
+              </p>
+              <p className="text-xs font-medium leading-tight opacity-90">
+                Years of dedicated pet care
+              </p>
             </motion.div>
           </motion.div>
 
@@ -74,18 +80,26 @@ export function About() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="lg:pl-8"
           >
-            <span className="text-primary font-bold tracking-wider uppercase text-sm mb-4 block">Our Story</span>
+            <span className="text-primary font-bold tracking-wider uppercase text-sm mb-4 block">
+              Our Story
+            </span>
             <h2 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-6 leading-tight">
-              Inspired by loyalty.<br />
+              Inspired by loyalty.
+              <br />
               <span className="text-primary italic">Driven by love.</span>
             </h2>
 
             <div className="space-y-5 text-lg text-foreground/70 mb-8">
               <p>
-                The story of Hachiko, the Akita who waited faithfully at Shibuya Station for nearly ten years, represents the profound bond between humans and animals. That devotion is the foundation of everything we do.
+                The story of Hachiko, the Akita who waited faithfully at Shibuya
+                Station for nearly ten years, represents the profound bond
+                between humans and animals. That devotion is the foundation of
+                everything we do.
               </p>
               <p>
-                Our veterinary team combines clinical expertise with genuine compassion — because we believe every pet deserves care delivered with patience, skill, and heart.
+                Our veterinary team combines clinical expertise with genuine
+                compassion — because we believe every pet deserves care
+                delivered with patience, skill, and heart.
               </p>
             </div>
 
@@ -100,19 +114,24 @@ export function About() {
 
             <div className="pt-6 border-t border-border flex items-center gap-6">
               <div>
-                <p className="font-serif font-bold text-xl text-foreground">Miki Adisu</p>
+                <p className="font-serif font-bold text-xl text-foreground">
+                  Mikias Adisu
+                </p>
                 <p className="text-sm text-muted-foreground">Founder & CEO</p>
               </div>
               <Button
                 variant="outline"
                 className="rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground"
-                onClick={() => document.querySelector("#booking")?.scrollIntoView({ behavior: "smooth" })}
+                onClick={() =>
+                  document
+                    .querySelector("#booking")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
               >
                 Meet the Team
               </Button>
             </div>
           </motion.div>
-
         </div>
       </div>
     </section>

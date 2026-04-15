@@ -77,7 +77,7 @@ export function Hero() {
               {[
                 { icon: Shield, text: "Licensed Veterinarians" },
                 { icon: Heart, text: "500+ Happy Pets" },
-                { icon: Clock, text: "10+ Years Experience" },
+                { icon: Clock, text: "3+ Years Experience" },
               ].map(({ icon: Icon, text }) => (
                 <div key={text} className="flex items-center gap-2 text-white/90">
                   <Icon size={16} className="text-primary" />

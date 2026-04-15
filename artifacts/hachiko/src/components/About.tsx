@@ -1,9 +1,11 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
+import founderMain from "@assets/IMG_20260414_085523_224_1776154317069.jpg";
+import founderAction from "@assets/IMG_20260414_085523_150_1776154317102.jpg";
 
 const highlights = [
-  "Licensed veterinarians with 10+ years experience",
+  "Licensed veterinarian with 3+ years of dedicated pet care",
   "State-of-the-art diagnostic equipment",
   "Low-stress, fear-free handling techniques",
   "Transparent pricing with no hidden fees",
@@ -30,8 +32,8 @@ export function About() {
             {/* Main vet photo */}
             <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl aspect-[4/5] md:aspect-[3/4]">
               <img
-                src="/images/vet.png"
-                alt="Hachiko veterinarian with patient"
+                src={founderMain}
+                alt="Miki Adisu, Founder of Hachiko Veterinary Care"
                 className="w-full h-full object-cover object-center"
               />
             </div>
@@ -45,8 +47,8 @@ export function About() {
               className="absolute -bottom-8 -right-4 md:-right-10 w-36 h-36 md:w-48 md:h-48 rounded-2xl overflow-hidden shadow-2xl z-20 border-4 border-white"
             >
               <img
-                src="/images/about.png"
-                alt="Veterinarian caring for a dog"
+                src={founderAction}
+                alt="Miki Adisu caring for a puppy"
                 className="w-full h-full object-cover object-center"
               />
             </motion.div>
@@ -59,7 +61,7 @@ export function About() {
               transition={{ delay: 0.4, duration: 0.6 }}
               className="absolute top-6 -right-4 md:-right-8 bg-primary p-5 rounded-2xl shadow-xl z-20 text-white max-w-[150px]"
             >
-              <p className="text-4xl font-serif font-bold leading-none mb-1">10+</p>
+              <p className="text-4xl font-serif font-bold leading-none mb-1">3+</p>
               <p className="text-xs font-medium leading-tight opacity-90">Years of dedicated pet care</p>
             </motion.div>
           </motion.div>
@@ -98,8 +100,8 @@ export function About() {
 
             <div className="pt-6 border-t border-border flex items-center gap-6">
               <div>
-                <p className="font-serif font-bold text-xl text-foreground">Dr. Sarah Jenkins, DVM</p>
-                <p className="text-sm text-muted-foreground">Founder & Lead Veterinarian</p>
+                <p className="font-serif font-bold text-xl text-foreground">Miki Adisu</p>
+                <p className="text-sm text-muted-foreground">Founder & CEO</p>
               </div>
               <Button
                 variant="outline"

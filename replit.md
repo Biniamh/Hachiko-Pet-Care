@@ -36,11 +36,25 @@ pnpm workspace monorepo using TypeScript. Hachiko Veterinary Care — a pet care
 
 ## Key Commands
 
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from OpenAPI spec
+On Replit (pnpm):
+- `pnpm --filter @workspace/api-server run dev` — run API server
+- `pnpm --filter @workspace/hachiko run dev` — run frontend
+- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks/Zod schemas
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- `pnpm --filter @workspace/api-server run dev` — run API server locally
-- `pnpm --filter @workspace/hachiko run dev` — run frontend locally
 
-See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details.
+Local development (npm):
+- `npm install` — install all dependencies
+- `npm run dev` — start both API server and frontend concurrently
+- `npm run dev:api` — start API server only (port 8080)
+- `npm run dev:web` — start frontend only (port 5173)
+
+## Local Setup
+
+1. Copy `.env.example` to `.env` and fill in your values
+2. Set up a PostgreSQL database and set `DATABASE_URL`
+3. Run `npm install` then `npm run dev`
+4. Frontend: http://localhost:5173
+5. API server: http://localhost:8080
+6. Admin panel: http://localhost:5173/admin
+
+See `.vscode/launch.json` for VS Code debugger configuration.

@@ -109,6 +109,8 @@ components:
           type: string
         service:
           type: string
+        servicePlace:
+          type: string
         date:
           type: string
         time:
@@ -133,6 +135,7 @@ components:
         - id
         - confirmationId
         - service
+        - servicePlace
         - date
         - time
         - ownerName
@@ -148,6 +151,8 @@ components:
       type: object
       properties:
         service:
+          type: string
+        servicePlace:
           type: string
         date:
           type: string
@@ -167,6 +172,7 @@ components:
           type: ["string", "null"]
       required:
         - service
+        - servicePlace
         - date
         - time
         - ownerName

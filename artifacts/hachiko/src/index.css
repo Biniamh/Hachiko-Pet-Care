@@ -59,43 +59,43 @@
 :root {
   /* Hachiko Vet — Green & Black Palette */
   --background: 0 0% 99%;
-  --foreground: 145 30% 8%;
+  --foreground: 149 30% 8%;
 
-  --border: 145 12% 88%;
-  --input: 145 12% 88%;
-  --ring: 145 65% 28%;
+  --border: 149 12% 88%;
+  --input: 149 12% 88%;
+  --ring: 149 45% 42%;
 
   /* Card: Clean White */
   --card: 0 0% 100%;
-  --card-foreground: 145 30% 8%;
-  --card-border: 145 10% 90%;
+  --card-foreground: 149 30% 8%;
+  --card-border: 149 10% 90%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 145 30% 8%;
-  --popover-border: 145 10% 90%;
+  --popover-foreground: 149 30% 8%;
+  --popover-border: 149 10% 90%;
 
-  /* Primary: Deep Forest Green */
-  --primary: 145 65% 28%;
+  /* Primary: #3B9B6A */
+  --primary: 149 45% 42%;
   --primary-foreground: 0 0% 100%;
 
   /* Secondary: Lighter sage green */
-  --secondary: 145 30% 88%;
-  --secondary-foreground: 145 65% 18%;
+  --secondary: 149 30% 88%;
+  --secondary-foreground: 149 45% 18%;
 
   /* Muted: Very light green-tinted gray */
-  --muted: 145 10% 95%;
-  --muted-foreground: 145 15% 40%;
+  --muted: 149 10% 95%;
+  --muted-foreground: 149 15% 40%;
 
   /* Accent: Soft mint */
-  --accent: 145 45% 90%;
-  --accent-foreground: 145 65% 22%;
+  --accent: 149 45% 90%;
+  --accent-foreground: 149 45% 22%;
 
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
 
-  --chart-1: 145 65% 28%;
-  --chart-2: 145 40% 50%;
-  --chart-3: 145 25% 65%;
+  --chart-1: 149 45% 42%;
+  --chart-2: 149 40% 50%;
+  --chart-3: 149 25% 65%;
   --chart-4: 160 50% 40%;
   --chart-5: 130 55% 35%;
 

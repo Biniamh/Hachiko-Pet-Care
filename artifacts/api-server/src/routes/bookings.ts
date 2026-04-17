@@ -46,6 +46,7 @@ router.post("/bookings", async (req, res) => {
       .values({
         confirmationId,
         service: data.service,
+        servicePlace: data.servicePlace,
         date: data.date,
         time: data.time,
         ownerName: data.ownerName,

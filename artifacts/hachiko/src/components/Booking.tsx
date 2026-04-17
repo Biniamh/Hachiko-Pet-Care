@@ -13,6 +13,7 @@ import {
   Scissors, Home, Footprints, Stethoscope,
   CheckCircle2, Calendar, Clock, ChevronLeft, ChevronRight,
   User, Mail, Phone, PawPrint, RefreshCw, Loader2,
+  Building2, Truck,
 } from "lucide-react";
 
 const SERVICES = [
@@ -22,7 +23,7 @@ const SERVICES = [
     description: "Full bath, styling, nail trim & ear clean",
     icon: Scissors,
     duration: "2–3 hrs",
-    price: "From $65",
+    price: "On request",
   },
   {
     id: "boarding",
@@ -30,7 +31,7 @@ const SERVICES = [
     description: "Cozy suite, 24/7 supervision & daily play",
     icon: Home,
     duration: "Per night",
-    price: "From $55",
+    price: "On request",
   },
   {
     id: "walking",
@@ -38,7 +39,7 @@ const SERVICES = [
     description: "30 or 60-minute walks tailored to your dog",
     icon: Footprints,
     duration: "30–60 min",
-    price: "From $25",
+    price: "On request",
   },
   {
     id: "vet",
@@ -46,7 +47,22 @@ const SERVICES = [
     description: "Check-ups, vaccinations & wellness plans",
     icon: Stethoscope,
     duration: "30–45 min",
-    price: "From $85",
+    price: "On request",
+  },
+];
+
+const SERVICE_PLACES = [
+  {
+    id: "clinic",
+    label: "Office / Clinic",
+    description: "Visit us at Gurd Shola, Addis Ababa",
+    icon: Building2,
+  },
+  {
+    id: "home",
+    label: "Outdoor / Home",
+    description: "We come to your home or preferred outdoor location",
+    icon: Truck,
   },
 ];
 
@@ -81,6 +97,7 @@ function formatDate(dateStr: string) {
 export function Booking() {
   const [step, setStep] = useState<1 | 2 | 3 | "confirmed">(1);
   const [selectedService, setSelectedService] = useState<string>("");
+  const [selectedServicePlace, setSelectedServicePlace] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [step1Error, setStep1Error] = useState<string>("");
@@ -102,6 +119,7 @@ export function Booking() {
 
   const validateStep1 = () => {
     if (!selectedService) { setStep1Error("Please select a service."); return false; }
+    if (!selectedServicePlace) { setStep1Error("Please select a service place."); return false; }
     if (!selectedDate) { setStep1Error("Please choose a date."); return false; }
     if (!selectedTime) { setStep1Error("Please select a time slot."); return false; }
     setStep1Error("");
@@ -118,6 +136,7 @@ export function Booking() {
       {
         data: {
           service: selectedService,
+          servicePlace: selectedServicePlace,
           date: selectedDate,
           time: selectedTime,
           ownerName: values.ownerName,
@@ -139,6 +158,7 @@ export function Booking() {
 
   const resetBooking = () => {
     setSelectedService("");
+    setSelectedServicePlace("");
     setSelectedDate("");
     setSelectedTime("");
     setStep1Error("");
@@ -149,6 +169,7 @@ export function Booking() {
   };
 
   const selectedServiceObj = SERVICES.find((s) => s.id === selectedService);
+  const selectedServicePlaceObj = SERVICE_PLACES.find((p) => p.id === selectedServicePlace);
 
   return (
     <section id="booking" className="py-24 bg-muted/40 relative overflow-hidden">
@@ -226,7 +247,7 @@ export function Booking() {
           <div className="bg-card rounded-2xl shadow-xl border border-border/60 overflow-hidden">
             <AnimatePresence mode="wait">
 
-              {/* ─── STEP 1: Service + Date + Time ─── */}
+              {/* ─── STEP 1: Service + Service Place + Date + Time ─── */}
               {step === 1 && (
                 <motion.div
                   key="step1"
@@ -270,6 +291,38 @@ export function Booking() {
                         </button>
                       );
                     })}
+                  </div>
+
+                  {/* ─── Service Place ─── */}
+                  <div className="mb-8">
+                    <h3 className="text-lg font-serif font-bold text-foreground mb-4">Service Place</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {SERVICE_PLACES.map((place) => {
+                        const Icon = place.icon;
+                        const isSelected = selectedServicePlace === place.id;
+                        return (
+                          <button
+                            key={place.id}
+                            onClick={() => { setSelectedServicePlace(place.id); setStep1Error(""); }}
+                            data-testid={`service-place-${place.id}`}
+                            className={`flex items-start gap-4 p-4 rounded-xl border-2 text-left transition-all ${
+                              isSelected
+                                ? "border-primary bg-primary/5"
+                                : "border-border hover:border-primary/40 hover:bg-muted/50"
+                            }`}
+                          >
+                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${isSelected ? "bg-primary text-white" : "bg-muted text-muted-foreground"}`}>
+                              <Icon size={20} />
+                            </div>
+                            <div className="min-w-0">
+                              <p className={`font-semibold text-sm ${isSelected ? "text-primary" : "text-foreground"}`}>{place.label}</p>
+                              <p className="text-xs text-muted-foreground mt-0.5 leading-snug">{place.description}</p>
+                            </div>
+                            {isSelected && <CheckCircle2 size={18} className="text-primary shrink-0 ml-auto mt-0.5" />}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
 
                   <div className="mb-6">
@@ -335,6 +388,10 @@ export function Booking() {
                       {selectedServiceObj && <selectedServiceObj.icon size={16} />}
                       {selectedServiceObj?.label}
                     </div>
+                    <div className="flex items-center gap-2 text-primary/80 font-medium">
+                      {selectedServicePlaceObj && <selectedServicePlaceObj.icon size={16} />}
+                      {selectedServicePlaceObj?.label}
+                    </div>
                     <div className="flex items-center gap-1.5 text-muted-foreground">
                       <Calendar size={14} /> {formatDate(selectedDate)}
                     </div>
@@ -368,7 +425,7 @@ export function Booking() {
                             <FormItem>
                               <FormLabel className="flex items-center gap-1.5"><Phone size={13} /> Phone Number</FormLabel>
                               <FormControl>
-                                <Input placeholder="(555) 000-0000" type="tel" data-testid="input-phone" {...field} />
+                                <Input placeholder="09XXXXXXXX" type="tel" data-testid="input-phone" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -479,13 +536,13 @@ export function Booking() {
                       <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4">Service Details</p>
                       {[
                         { label: "Service", value: selectedServiceObj?.label },
+                        { label: "Service Place", value: selectedServicePlaceObj?.label },
                         { label: "Date", value: formatDate(selectedDate) },
                         { label: "Time", value: selectedTime },
-                        { label: "Starting Price", value: selectedServiceObj?.price, highlight: true },
-                      ].map(({ label, value, highlight }) => (
+                      ].map(({ label, value }) => (
                         <div key={label} className="flex justify-between items-center">
                           <span className="text-sm text-muted-foreground">{label}</span>
-                          <span className={`text-sm font-semibold ${highlight ? "text-primary" : "text-foreground"}`}>{value}</span>
+                          <span className="text-sm font-semibold text-foreground">{value}</span>
                         </div>
                       ))}
                     </div>
@@ -524,95 +581,71 @@ export function Booking() {
                       variant="outline"
                       onClick={() => setStep(2)}
                       className="rounded-full gap-1.5"
-                      disabled={createBooking.isPending}
                       data-testid="button-step3-back"
                     >
-                      <ChevronLeft size={16} /> Edit
+                      <ChevronLeft size={16} /> Back
                     </Button>
                     <Button
                       onClick={handleConfirm}
                       disabled={createBooking.isPending}
                       className="flex-1 h-12 text-base font-semibold rounded-full bg-primary hover:bg-primary/90 gap-2"
-                      data-testid="button-confirm-booking"
+                      data-testid="button-confirm"
                     >
                       {createBooking.isPending ? (
-                        <><Loader2 size={18} className="animate-spin" /> Confirming...</>
+                        <><Loader2 size={18} className="animate-spin" /> Confirming…</>
                       ) : (
-                        "Confirm Booking"
+                        <>Confirm Booking <CheckCircle2 size={18} /></>
                       )}
                     </Button>
                   </div>
                 </motion.div>
               )}
 
-              {/* ─── CONFIRMATION ─── */}
+              {/* ─── CONFIRMED ─── */}
               {step === "confirmed" && confirmedBooking && (
                 <motion.div
                   key="confirmed"
-                  initial={{ opacity: 0, scale: 0.96 }}
+                  initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.4, ease: "easeOut" }}
-                  className="p-8 md:p-12 text-center"
+                  transition={{ duration: 0.4 }}
+                  className="p-8 md:p-10 text-center"
                 >
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.1 }}
-                    className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6"
-                  >
-                    <CheckCircle2 className="w-10 h-10 text-primary" />
-                  </motion.div>
-
+                  <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <CheckCircle2 size={40} className="text-primary" />
+                  </div>
                   <h3 className="text-3xl font-serif font-bold text-foreground mb-2">Booking Confirmed!</h3>
-                  <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-                    Thank you, <span className="font-medium text-foreground">{confirmedBooking.ownerName}</span>! A confirmation has been noted for{" "}
-                    <span className="font-medium text-foreground">{confirmedBooking.email}</span>.
+                  <p className="text-muted-foreground mb-8 max-w-sm mx-auto">
+                    Thank you, {confirmedBooking.ownerName}. We look forward to caring for {confirmedBooking.petName}.
                   </p>
-
-                  <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 text-left max-w-md mx-auto mb-8">
-                    <div className="flex items-center justify-between mb-5">
-                      <p className="text-xs font-bold uppercase tracking-widest text-primary">Booking Reference</p>
-                      <span className="font-mono font-bold text-lg text-foreground">{confirmedBooking.confirmationId}</span>
+                  <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 inline-block mb-8">
+                    <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Your Reference</p>
+                    <p className="text-3xl font-mono font-bold text-foreground tracking-widest">{confirmedBooking.confirmationId}</p>
+                  </div>
+                  <div className="bg-muted/60 rounded-xl p-5 mb-8 text-left space-y-3 max-w-sm mx-auto">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Service</span>
+                      <span className="text-sm font-semibold">{SERVICES.find(s => s.id === confirmedBooking.service)?.label ?? confirmedBooking.service}</span>
                     </div>
-
-                    <div className="space-y-3 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Service</span>
-                        <span className="font-semibold capitalize">{confirmedBooking.service.replace("-", " ")}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Date</span>
-                        <span className="font-semibold">{formatDate(confirmedBooking.date)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Time</span>
-                        <span className="font-semibold">{confirmedBooking.time}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Status</span>
-                        <span className="font-semibold text-primary capitalize">{confirmedBooking.status}</span>
-                      </div>
-                      <div className="border-t border-primary/20 pt-3 flex justify-between">
-                        <span className="text-muted-foreground">Pet</span>
-                        <span className="font-semibold">{confirmedBooking.petName} ({confirmedBooking.petBreed})</span>
-                      </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Service Place</span>
+                      <span className="text-sm font-semibold">{SERVICE_PLACES.find(p => p.id === confirmedBooking.servicePlace)?.label ?? confirmedBooking.servicePlace}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Date</span>
+                      <span className="text-sm font-semibold">{formatDate(confirmedBooking.date)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Time</span>
+                      <span className="text-sm font-semibold">{confirmedBooking.time}</span>
                     </div>
                   </div>
-
-                  <p className="text-sm text-muted-foreground mb-6">
-                    Questions? Call{" "}
-                    <a href="tel:5035550199" className="text-primary font-medium hover:underline">(503) 555-0199</a>{" "}
-                    or email{" "}
-                    <a href="mailto:hello@hachikovet.com" className="text-primary font-medium hover:underline">hello@hachikovet.com</a>
-                  </p>
-
                   <Button
-                    variant="outline"
                     onClick={resetBooking}
-                    className="rounded-full gap-2 border-primary text-primary hover:bg-primary hover:text-white"
+                    variant="outline"
+                    className="rounded-full gap-2"
                     data-testid="button-book-another"
                   >
-                    <RefreshCw size={15} /> Book Another Appointment
+                    <RefreshCw size={16} /> Book Another Appointment
                   </Button>
                 </motion.div>
               )}

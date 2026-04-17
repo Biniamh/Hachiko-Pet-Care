@@ -35,7 +35,7 @@ export function About() {
             <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl aspect-[4/5] md:aspect-[3/4]">
               <img
                 src={founderMain}
-                alt="Miki Adisu, Founder of Hachiko Veterinary Care"
+                alt="Mikiyas Addisu, Founder of Hachiko Veterinary Clinic"
                 className="w-full h-full object-cover object-center"
               />
             </div>
@@ -50,7 +50,7 @@ export function About() {
             >
               <img
                 src={founderAction}
-                alt="Miki Adisu caring for a puppy"
+                alt="Mikiyas Addisu caring for a puppy"
                 className="w-full h-full object-cover object-center"
               />
             </motion.div>
@@ -115,7 +115,7 @@ export function About() {
             <div className="pt-6 border-t border-border flex items-center gap-6">
               <div>
                 <p className="font-serif font-bold text-xl text-foreground">
-                  Mikias Adisu
+                  Mikiyas Addisu
                 </p>
                 <p className="text-sm text-muted-foreground">Founder & CEO</p>
               </div>
